@@ -1,1 +1,3 @@
 src/MicroservicesCqrsKafka/.idea/
+src/MicroservicesCqrsKafka/OrdersService/obj/
+src/MicroservicesCqrsKafka/OrdersService/bin/

@@ -23,7 +23,7 @@ public class Program
             BootstrapServers = bootstrapServers
         }).Build();
         
-        var inventoryProducer = new ProducerBuilder<int, string>(new ProducerConfig
+        var inventoryProducer = new ProducerBuilder<string, string>(new ProducerConfig
         {
             BootstrapServers = bootstrapServers
         }).Build();
@@ -44,9 +44,9 @@ public class Program
                 Quantity = order.Quantity
             };
             var serializedInventory = JsonSerializer.Serialize(inventory);
-            await inventoryProducer.ProduceAsync("warehouse.inventory", new Message<int, string>
+            await inventoryProducer.ProduceAsync("warehouse.inventory", new Message<string, string>
             {
-                Key = (int)inventory.Product,
+                Key = ((int)inventory.Product).ToString(),
                 Value = serializedInventory
             });
 

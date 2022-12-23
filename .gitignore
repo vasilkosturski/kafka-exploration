@@ -2,3 +2,6 @@ src/MicroservicesCqrsKafka/.idea/
 src/MicroservicesCqrsKafka/OrdersService/obj/
 src/MicroservicesCqrsKafka/OrdersService/bin/
 src/MicroservicesCqrsKafka/MicroservicesCqrsKafka.sln.DotSettings.user
+src/MicroservicesCqrsKafka/Simulator/bin/
+src/MicroservicesCqrsKafka/Simulator/obj/
+kafka-cqrs.txt

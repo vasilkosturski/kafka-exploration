@@ -1,10 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simulator.csproj", "{C6A9FBFD-987C-4685-BFCF-01CC43280B4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6A9FBFD-987C-4685-BFCF-01CC43280B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A9FBFD-987C-4685-BFCF-01CC43280B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A9FBFD-987C-4685-BFCF-01CC43280B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A9FBFD-987C-4685-BFCF-01CC43280B4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

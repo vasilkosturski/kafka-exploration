@@ -25,21 +25,10 @@ public static class Program
             AutoOffsetReset = AutoOffsetReset.Earliest,
             CommitIntervalMs = 3000
         };
-        
-        /*
-        final KTable<Product, Integer> warehouseInventory = builder
-          .table(Topics.WAREHOUSE_INVENTORY.name(),
-            Consumed.with(Topics.WAREHOUSE_INVENTORY.keySerde(), Topics.WAREHOUSE_INVENTORY.valueSerde()));
-        */
 
         var builder = new StreamBuilder();
         var inventoryTable = builder.Table("warehouse.inventory", 
             InMemory.As<string, string>("table-store"));
-                
-        /*
-        var inventoryKafkaStream = new KafkaStream(builder.Build(), config);
-        await inventoryKafkaStream.StartAsync();
-        */
         
         builder.Stream<string, string>("orders")
             .SelectKey((k, v) =>

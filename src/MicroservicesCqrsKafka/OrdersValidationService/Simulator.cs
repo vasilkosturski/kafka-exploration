@@ -20,9 +20,12 @@ public class Simulator
             BootstrapServers = bootstrapServers
         }).Build();
 
-        while (true)
+        for (var i = 0; i < 10; i++)
         {
-            var order = fixture.Create<Order>();
+            var order = fixture
+                .Build<Order>()
+                .With(x => x.State, OrderState.Created)
+                .Create();
             var serializedOrder = JsonSerializer.Serialize(order);
             await ordersProducer.ProduceAsync("orders", new Message<string, string>
             {

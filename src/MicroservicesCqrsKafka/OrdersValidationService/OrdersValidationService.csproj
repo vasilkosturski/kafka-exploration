@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Streamiz.Kafka.Net" Version="1.4.2" />
         <PackageReference Include="AutoFixture" Version="4.17.0" />
-        <PackageReference Include="Confluent.Kafka" Version="1.9.2" />
     </ItemGroup>
 
 </Project>

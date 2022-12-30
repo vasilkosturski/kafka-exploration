@@ -5,3 +5,6 @@ src/MicroservicesCqrsKafka/MicroservicesCqrsKafka.sln.DotSettings.user
 src/MicroservicesCqrsKafka/Simulator/bin/
 src/MicroservicesCqrsKafka/Simulator/obj/
 kafka-cqrs.txt
+src/MicroservicesCqrsKafka/OrdersValidationService/bin/
+src/MicroservicesCqrsKafka/OrdersValidationService/obj/OrdersValidationService.csproj.nuget.dgspec.json
+src/MicroservicesCqrsKafka/OrdersValidationService/obj/

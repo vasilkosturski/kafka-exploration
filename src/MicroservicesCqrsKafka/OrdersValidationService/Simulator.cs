@@ -1,23 +1,15 @@
 ﻿using System.Text.Json;
 using AutoFixture;
 using Confluent.Kafka;
-using Confluent.Kafka.Admin;
 
-namespace Simulator;
+namespace OrdersValidationService;
 
-public class Program
+public class Simulator
 {
-    public static async Task Main(string[] args)
+    public static async Task Run(string bootstrapServers)
     {
         var fixture = new Fixture();
         
-        var bootstrapServers = "localhost:9092";
-
-        /*
-        await CreateKafkaTopic("orders", bootstrapServers);
-        await CreateKafkaTopic("warehouse.inventory", bootstrapServers);
-        */
-
         var ordersProducer = new ProducerBuilder<string, string>(new ProducerConfig
         {
             BootstrapServers = bootstrapServers
@@ -52,17 +44,6 @@ public class Program
 
             await Task.Delay(1000);
         }
-    }
-    
-    private static async Task CreateKafkaTopic(string topicName, string bootstrapServers)
-    {
-        using var adminClient =
-            new AdminClientBuilder(new AdminClientConfig { BootstrapServers = bootstrapServers }).Build();
-        
-        await adminClient.CreateTopicsAsync(new TopicSpecification[]
-        {
-            new() { Name = topicName, ReplicationFactor = 1, NumPartitions = 1 }
-        });
     }
 }
 

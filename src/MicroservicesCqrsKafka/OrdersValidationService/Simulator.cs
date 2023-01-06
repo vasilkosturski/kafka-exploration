@@ -20,10 +20,37 @@ public class Simulator
             BootstrapServers = bootstrapServers
         }).Build();
 
-        for (var i = 0; i < 10; i++)
+        var inventories = new List<WarehouseInventory>
         {
+            new()
+            {
+                Product = Product.Jumpers,
+                Quantity = 10
+            },
+            new()
+            {
+                Product = Product.Stockings,
+                Quantity = 10
+            },
+            new()
+            {
+                Product = Product.Underpants,
+                Quantity = 10
+            }
+        };
+        
+        foreach (var inventory in inventories)
+        {
+            var serializedInventory = JsonSerializer.Serialize(inventory);
+            await inventoryProducer.ProduceAsync("warehouse.inventory", new Message<string, string>
+            {
+                Key = ((int)inventory.Product).ToString(),
+                Value = serializedInventory
+            });
+            
             var order = fixture
                 .Build<Order>()
+                .With(x => x.Product, inventory.Product)
                 .With(x => x.State, OrderState.Created)
                 .Create();
             var serializedOrder = JsonSerializer.Serialize(order);
@@ -31,18 +58,6 @@ public class Simulator
             {
                 Key = order.Id,
                 Value = serializedOrder
-            });
-            
-            var inventory = new WarehouseInventory
-            {
-                Product = order.Product,
-                Quantity = order.Quantity
-            };
-            var serializedInventory = JsonSerializer.Serialize(inventory);
-            await inventoryProducer.ProduceAsync("warehouse.inventory", new Message<string, string>
-            {
-                Key = ((int)inventory.Product).ToString(),
-                Value = serializedInventory
             });
 
             await Task.Delay(1000);

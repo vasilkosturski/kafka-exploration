@@ -16,20 +16,13 @@ public static class Program
         await CreateKafkaTopic("orders", bootstrapServers);
         await CreateKafkaTopic("warehouse.inventory", bootstrapServers);
         
-        _ = Task.Run(async () => await Simulator.Run(bootstrapServers));
-
-        var config = new StreamConfig<StringSerDes, StringSerDes>
-        {
-            ApplicationId = $"test-app-2",
-            BootstrapServers = "localhost:9092",
-            AutoOffsetReset = AutoOffsetReset.Earliest,
-            CommitIntervalMs = 3000
-        };
+        await Simulator.Run(bootstrapServers);
 
         var builder = new StreamBuilder();
-        var inventoryTable = builder.Table("warehouse.inventory", 
-            InMemory.As<string, string>("table-store"));
         
+        var inventoryTable = builder.Table("warehouse.inventory", 
+            InMemory.As<string, string>());
+
         builder.Stream<string, string>("orders")
             .SelectKey((k, v) =>
             {
@@ -50,8 +43,18 @@ public static class Program
                     order, inventory
                 });
             })
+            //.To("output-topic");
             .Foreach((k, v) => Console.WriteLine($"k: {k}, v: {v}"));
         
+        var config = new StreamConfig<StringSerDes, StringSerDes>
+        {
+            ApplicationId = $"test-app-2",
+            BootstrapServers = "localhost:9092",
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            //CommitIntervalMs = 500,
+            //Guarantee = ProcessingGuarantee.EXACTLY_ONCE,
+            //ReplicationFactor = 1,
+        };
         var ordersStream = new KafkaStream(builder.Build(), config);
 
         Console.CancelKeyPress += (o, e) => {
@@ -59,6 +62,12 @@ public static class Program
         };
 
         await ordersStream.StartAsync();
+
+        while (true)
+        {
+            await Simulator.Run(bootstrapServers);
+            await Task.Delay(1000);
+        }
     }
     
     private static async Task CreateKafkaTopic(string topicName, string bootstrapServers)

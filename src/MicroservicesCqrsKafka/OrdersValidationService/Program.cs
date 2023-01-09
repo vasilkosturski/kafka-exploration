@@ -11,12 +11,8 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
-        var bootstrapServers = "localhost:9092";
-        
-        await CreateKafkaTopic("orders", bootstrapServers);
-        await CreateKafkaTopic("warehouse.inventory", bootstrapServers);
-        
-        await Simulator.Run(bootstrapServers);
+        await CreateKafkaTopic("orders", Simulator.BootstrapServers);
+        await CreateKafkaTopic("warehouse.inventory", Simulator.BootstrapServers);
 
         var builder = new StreamBuilder();
         
@@ -49,25 +45,34 @@ public static class Program
         var config = new StreamConfig<StringSerDes, StringSerDes>
         {
             ApplicationId = $"test-app-2",
-            BootstrapServers = "localhost:9092",
-            AutoOffsetReset = AutoOffsetReset.Earliest,
-            //CommitIntervalMs = 500,
-            //Guarantee = ProcessingGuarantee.EXACTLY_ONCE,
-            //ReplicationFactor = 1,
+            BootstrapServers = Simulator.BootstrapServers,
+            AutoOffsetReset = AutoOffsetReset.Earliest
         };
         var ordersStream = new KafkaStream(builder.Build(), config);
 
         Console.CancelKeyPress += (o, e) => {
             ordersStream.Dispose();
         };
-
+        
         await ordersStream.StartAsync();
 
-        while (true)
+        _ = Task.Run(async () =>
         {
-            await Simulator.Run(bootstrapServers);
-            await Task.Delay(1000);
-        }
+            while (true)
+            {
+                await Simulator.ProduceInventory();
+                await Task.Delay(1500);
+            }
+        });
+        
+        _ = Task.Run(async () =>
+        {
+            while (true)
+            {
+                await Simulator.ProduceOrder();
+                await Task.Delay(1000);
+            }
+        });
     }
     
     private static async Task CreateKafkaTopic(string topicName, string bootstrapServers)
@@ -87,7 +92,7 @@ public static class Program
                 {
                     Name = topicName, 
                     ReplicationFactor = 1, 
-                    NumPartitions = 1
+                    NumPartitions = 2
                 }
             });
         }

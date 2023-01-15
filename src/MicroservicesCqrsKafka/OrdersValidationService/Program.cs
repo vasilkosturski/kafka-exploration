@@ -28,7 +28,7 @@ public static class Program
                 {
                     var order = JsonSerializer.Deserialize<Order>(v);
                     return acc + order.Quantity;
-                }, RocksDb.As<int, int>("agg-store")
+                }, RocksDb.As<int, int>("products-ordered-quantities")
                     .WithKeySerdes<Int32SerDes>()
                     .WithValueSerdes<Int32SerDes>()
             )

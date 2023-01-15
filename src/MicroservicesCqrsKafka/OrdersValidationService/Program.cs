@@ -28,18 +28,17 @@ public static class Program
                 {
                     var order = JsonSerializer.Deserialize<Order>(v);
                     return acc + order.Quantity;
-                }, InMemory.As<int, int>("agg-store2")
+                }, RocksDb.As<int, int>("agg-store")
                     .WithKeySerdes<Int32SerDes>()
                     .WithValueSerdes<Int32SerDes>()
-                    .WithRetention(TimeSpan.FromSeconds(5)),
-                "my-aggregation"
             )
             .ToStream()
-            .Foreach((k, v) => Console.WriteLine($"k: {k}, v: {v}"));
+            .Foreach((product, quantity) => 
+                Console.WriteLine($"Product: {(Product)product}, Quantity: {quantity}"));
         
         var config = new StreamConfig<StringSerDes, StringSerDes>
         {
-            ApplicationId = $"test-app-2",
+            ApplicationId = "test-app",
             BootstrapServers = Simulator.BootstrapServers,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };

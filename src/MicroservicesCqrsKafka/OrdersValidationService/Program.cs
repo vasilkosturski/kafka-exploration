@@ -12,34 +12,29 @@ public static class Program
     public static async Task Main(string[] args)
     {
         await CreateKafkaTopic("orders", Simulator.BootstrapServers);
-        await CreateKafkaTopic("warehouse.inventory", Simulator.BootstrapServers);
 
         var builder = new StreamBuilder();
-        
-        var inventoryTable = builder.Table("warehouse.inventory", 
-            InMemory.As<string, string>());
 
         builder.Stream<string, string>("orders")
             .SelectKey((k, v) =>
             {
                 var order = JsonSerializer.Deserialize<Order>(v);
-                return ((int)order.Product).ToString();
+                return (int)order.Product;
             })
-            .Filter((k, v) =>
-            {
-                var order = JsonSerializer.Deserialize<Order>(v);
-                return order.State == OrderState.Created;
-            })
-            .Join(inventoryTable, (orderStr, inventoryStr) =>
-            {
-                var order = JsonSerializer.Deserialize<Order>(orderStr);
-                var inventory = JsonSerializer.Deserialize<WarehouseInventory>(inventoryStr);
-                return JsonSerializer.Serialize(new
+            .GroupByKey<Int32SerDes, StringSerDes>()
+            .Aggregate(
+                () => 0,
+                (_, v, acc) =>
                 {
-                    order, inventory
-                });
-            })
-            //.To("output-topic");
+                    var order = JsonSerializer.Deserialize<Order>(v);
+                    return acc + order.Quantity;
+                }, InMemory.As<int, int>("agg-store2")
+                    .WithKeySerdes<Int32SerDes>()
+                    .WithValueSerdes<Int32SerDes>()
+                    .WithRetention(TimeSpan.FromSeconds(5)),
+                "my-aggregation"
+            )
+            .ToStream()
             .Foreach((k, v) => Console.WriteLine($"k: {k}, v: {v}"));
         
         var config = new StreamConfig<StringSerDes, StringSerDes>
@@ -56,15 +51,6 @@ public static class Program
         
         await ordersStream.StartAsync();
 
-        _ = Task.Run(async () =>
-        {
-            while (true)
-            {
-                await Simulator.ProduceInventory();
-                await Task.Delay(1500);
-            }
-        });
-        
         _ = Task.Run(async () =>
         {
             while (true)

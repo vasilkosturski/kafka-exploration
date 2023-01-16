@@ -28,7 +28,7 @@ public static class Program
                 {
                     var order = JsonSerializer.Deserialize<Order>(v);
                     return acc + order.Quantity;
-                }, RocksDb.As<int, int>("products-ordered-quantities")
+                }, RocksDb.As<int, int>("orders-products-quantities")
                     .WithKeySerdes<Int32SerDes>()
                     .WithValueSerdes<Int32SerDes>()
             )
@@ -40,7 +40,8 @@ public static class Program
         {
             ApplicationId = "test-app",
             BootstrapServers = Simulator.BootstrapServers,
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            StateDir = "."
         };
         var ordersStream = new KafkaStream(builder.Build(), config);
 

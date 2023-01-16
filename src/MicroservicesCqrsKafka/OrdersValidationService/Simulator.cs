@@ -24,6 +24,7 @@ public class Simulator
         var order = fixture
             .Build<Order>()
             .With(x => x.Product, (Product)productValues.GetValue(Rng.Next(productValues.Length)))
+            .With(x => x.Quantity, Rng.Next(1,4))
             .Create();
         await OrdersProducer.ProduceAsync("orders",
             new Message<string, string>
@@ -43,8 +44,6 @@ public class Order
 
 public enum Product
 {
-    Jackets, 
-    Sneaks, 
-    Hoodies,
+    Jackets,
     Shirts
 }

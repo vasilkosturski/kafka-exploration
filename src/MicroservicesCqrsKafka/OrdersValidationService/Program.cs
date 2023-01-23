@@ -11,6 +11,8 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
+        //RockDBReader.Read();
+        
         await CreateKafkaTopic("orders", Simulator.BootstrapServers);
 
         var builder = new StreamBuilder();
@@ -41,7 +43,9 @@ public static class Program
             ApplicationId = "test-app",
             BootstrapServers = Simulator.BootstrapServers,
             AutoOffsetReset = AutoOffsetReset.Earliest,
-            StateDir = "."
+            StateDir = ".",
+            
+            CommitIntervalMs = (long)TimeSpan.FromHours(1).TotalMilliseconds // Set for demo purposes
         };
         var ordersStream = new KafkaStream(builder.Build(), config);
 
@@ -51,14 +55,7 @@ public static class Program
         
         await ordersStream.StartAsync();
 
-        _ = Task.Run(async () =>
-        {
-            while (true)
-            {
-                await Simulator.ProduceOrder();
-                await Task.Delay(1000);
-            }
-        });
+        await Simulator.ProduceOrders();
     }
     
     private static async Task CreateKafkaTopic(string topicName, string bootstrapServers)
@@ -82,7 +79,7 @@ public static class Program
                 }
             });
         }
-        catch (Exception e)
+        catch (CreateTopicsException e)
         {
             // do nothing in case of topic already exist
         }

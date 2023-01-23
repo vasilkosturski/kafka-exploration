@@ -1,13 +1,10 @@
 ﻿using System.Text.Json;
-using AutoFixture;
 using Confluent.Kafka;
 
 namespace OrdersValidationService;
 
 public class Simulator
 {
-    private static readonly Random Rng = new();
-    
     public const string BootstrapServers = "localhost:9092,localhost:9093";
 
     private static readonly IProducer<string, string> OrdersProducer =
@@ -16,22 +13,25 @@ public class Simulator
             BootstrapServers = BootstrapServers
         }).Build();
 
-    public static async Task ProduceOrder()
+    public static async Task ProduceOrders()
     {
-        var fixture = new Fixture();
-
-        var productValues = Enum.GetValues(typeof(Product));
-        var order = fixture
-            .Build<Order>()
-            .With(x => x.Product, (Product)productValues.GetValue(Rng.Next(productValues.Length)))
-            .With(x => x.Quantity, Rng.Next(1,4))
-            .Create();
-        await OrdersProducer.ProduceAsync("orders",
-            new Message<string, string>
+        for (int i = 0; i < 5; i++)
+        {
+            var order = new Order
             {
-                Key = order.Id,
-                Value = JsonSerializer.Serialize(order)
-            });
+                Id = $"order_{i}",
+                Product = (Product)(i % 2),
+                Quantity = 1
+            };
+            await OrdersProducer.ProduceAsync("orders",
+                new Message<string, string>
+                {
+                    Key = order.Id,
+                    Value = JsonSerializer.Serialize(order)
+                });
+
+            await Task.Delay(1000);
+        }
     }
 }
 

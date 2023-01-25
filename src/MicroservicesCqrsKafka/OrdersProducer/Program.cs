@@ -1,21 +1,22 @@
-﻿using System.Text.Json;
+﻿// See https://aka.ms/new-console-template for more information
+
+using System.Text.Json;
+using Common;
 using Confluent.Kafka;
 
-namespace OrdersValidationService;
+namespace OrdersProducer;
 
-public class Simulator
+public static class Program
 {
-    public const string BootstrapServers = "localhost:9092,localhost:9093";
-
     private static readonly IProducer<string, string> OrdersProducer =
         new ProducerBuilder<string, string>(new ProducerConfig
         {
-            BootstrapServers = BootstrapServers
+            BootstrapServers = Constants.BootstrapServers
         }).Build();
 
-    public static async Task ProduceOrders()
+    public static async Task Main(string[] args)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 500; i++)
         {
             var order = new Order
             {
@@ -33,17 +34,4 @@ public class Simulator
             await Task.Delay(1000);
         }
     }
-}
-
-public class Order
-{
-    public string Id { get; set; }
-    public Product Product { get; set; }
-    public int Quantity { get; set; }
-}
-
-public enum Product
-{
-    Jackets,
-    Shirts
 }

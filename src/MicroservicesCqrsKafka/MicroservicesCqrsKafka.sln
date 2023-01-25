@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersValidationService", "OrdersValidationService\OrdersValidationService.csproj", "{2F0C8061-E51D-4BF4-8E8D-4AA49811D008}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersProducer", "OrdersProducer\OrdersProducer.csproj", "{65BC141B-9EB8-495C-BC25-B0B2280375F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{BA45A7F6-4A6D-433A-8856-D41C0D172077}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{2F0C8061-E51D-4BF4-8E8D-4AA49811D008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F0C8061-E51D-4BF4-8E8D-4AA49811D008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F0C8061-E51D-4BF4-8E8D-4AA49811D008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BC141B-9EB8-495C-BC25-B0B2280375F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BC141B-9EB8-495C-BC25-B0B2280375F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BC141B-9EB8-495C-BC25-B0B2280375F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BC141B-9EB8-495C-BC25-B0B2280375F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

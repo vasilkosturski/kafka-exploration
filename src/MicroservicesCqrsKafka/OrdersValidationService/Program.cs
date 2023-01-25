@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Common;
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using Streamiz.Kafka.Net;
@@ -9,11 +10,13 @@ namespace OrdersValidationService;
 
 public static class Program
 {
+    private static Random rng = new Random();
+    
     public static async Task Main(string[] args)
     {
         //RockDBReader.Read();
         
-        await CreateKafkaTopic("orders", Simulator.BootstrapServers);
+        await CreateKafkaTopic("orders", Constants.BootstrapServers);
 
         var builder = new StreamBuilder();
 
@@ -30,7 +33,7 @@ public static class Program
                 {
                     var order = JsonSerializer.Deserialize<Order>(v);
                     return acc + order.Quantity;
-                }, RocksDb.As<int, int>("orders-products-quantities")
+                }, RocksDb.As<int, int>($"orders-products-quantities")
                     .WithKeySerdes<Int32SerDes>()
                     .WithValueSerdes<Int32SerDes>()
             )
@@ -41,9 +44,9 @@ public static class Program
         var config = new StreamConfig<StringSerDes, StringSerDes>
         {
             ApplicationId = "test-app",
-            BootstrapServers = Simulator.BootstrapServers,
+            BootstrapServers = Constants.BootstrapServers,
             AutoOffsetReset = AutoOffsetReset.Earliest,
-            StateDir = ".",
+            StateDir = $"./state/state-dir-{rng.Next()}",
             
             CommitIntervalMs = (long)TimeSpan.FromHours(1).TotalMilliseconds // Set for demo purposes
         };
@@ -54,8 +57,6 @@ public static class Program
         };
         
         await ordersStream.StartAsync();
-
-        await Simulator.ProduceOrders();
     }
     
     private static async Task CreateKafkaTopic(string topicName, string bootstrapServers)

@@ -11,3 +11,5 @@ src/MicroservicesCqrsKafka/OrdersValidationService/obj/
 src/MicroservicesCqrsKafka/Common/obj/
 src/MicroservicesCqrsKafka/OrdersProducer/obj/
 src/MicroservicesCqrsKafka/Common/bin/
+src/MicroservicesCqrsKafka/OrdersProducer/bin/
+src/MicroservicesCqrsKafka/OrdersValidationService/state/

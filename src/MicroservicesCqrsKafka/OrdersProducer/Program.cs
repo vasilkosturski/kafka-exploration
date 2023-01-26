@@ -8,23 +8,22 @@ namespace OrdersProducer;
 
 public static class Program
 {
-    private static readonly IProducer<string, string> OrdersProducer =
-        new ProducerBuilder<string, string>(new ProducerConfig
+    public static async Task Main(string[] args)
+    {
+        var producer = new ProducerBuilder<string, string>(new ProducerConfig
         {
             BootstrapServers = Constants.BootstrapServers
         }).Build();
 
-    public static async Task Main(string[] args)
-    {
         for (int i = 0; i < 500; i++)
         {
             var order = new Order
             {
                 Id = $"order_{i}",
-                Product = (Product)(i % 2),
+                Product = (Product)(i % 3),
                 Quantity = 1
             };
-            await OrdersProducer.ProduceAsync("orders",
+            await producer.ProduceAsync("orders",
                 new Message<string, string>
                 {
                     Key = order.Id,

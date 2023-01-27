@@ -54,7 +54,7 @@ public static class Program
                 {
                     Name = topicName, 
                     ReplicationFactor = 1, 
-                    NumPartitions = 4
+                    NumPartitions = 2
                 }
             });
         }

@@ -18,7 +18,9 @@ public static class Program
         var builder = new StreamBuilder();
 
         builder.Stream<string, string>("orders")
-            .SelectKey((k, v) =>
+            .Peek((_, order) =>
+                Console.WriteLine($"Order: {order}"))
+            .SelectKey((_, v) =>
             {
                 var order = JsonSerializer.Deserialize<Order>(v);
                 return (int)order.Product;
@@ -35,7 +37,7 @@ public static class Program
                     .WithValueSerdes<Int32SerDes>()
             )
             .ToStream()
-            .Foreach((product, quantity) => 
+            .Peek((product, quantity) => 
                 Console.WriteLine($"Product: {(Product)product}, Quantity: {quantity}"));
         
         var config = new StreamConfig<StringSerDes, StringSerDes>

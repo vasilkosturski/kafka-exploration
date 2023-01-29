@@ -9,7 +9,7 @@ namespace OrdersValidationService;
 
 public static class Program
 {
-    private static Random rng = new Random();
+    private static Random rng = new();
     
     public static async Task Main(string[] args)
     {
@@ -20,12 +20,11 @@ public static class Program
         builder.Stream<string, string>("orders")
             .Peek((_, order) =>
                 Console.WriteLine($"Order: {order}"))
-            .SelectKey((_, v) =>
+            .GroupBy<int, Int32SerDes>((k, v) =>
             {
                 var order = JsonSerializer.Deserialize<Order>(v);
                 return (int)order.Product;
             })
-            .GroupByKey<Int32SerDes, StringSerDes>()
             .Aggregate(
                 () => 0,
                 (_, v, acc) =>

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersValidationService", "OrdersValidationService\OrdersValidationService.csproj", "{2F0C8061-E51D-4BF4-8E8D-4AA49811D008}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersAggregator", "OrdersAggregator\OrdersAggregator.csproj", "{2F0C8061-E51D-4BF4-8E8D-4AA49811D008}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersProducer", "OrdersProducer\OrdersProducer.csproj", "{65BC141B-9EB8-495C-BC25-B0B2280375F7}"
 EndProject

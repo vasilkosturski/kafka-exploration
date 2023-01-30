@@ -2,9 +2,9 @@
 using RocksDbSharp;
 using Streamiz.Kafka.Net.SerDes;
 
-namespace OrdersValidationService;
+namespace OrdersAggregator;
 
-public class RockDBReader
+public class RockDbReader
 {
     public static void Read()
     {

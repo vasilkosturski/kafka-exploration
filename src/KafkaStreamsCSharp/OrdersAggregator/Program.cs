@@ -5,7 +5,7 @@ using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.SerDes;
 using Streamiz.Kafka.Net.Table;
 
-namespace OrdersValidationService;
+namespace OrdersAggregator;
 
 public static class Program
 {

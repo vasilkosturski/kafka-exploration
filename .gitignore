@@ -20,3 +20,5 @@ src/KafkaStreamsCSharp/OrdersProducer/bin/
 src/KafkaStreamsCSharp/OrdersProducer/obj/
 src/KafkaStreamsCSharp/OrdersValidationService/bin/
 src/KafkaStreamsCSharp/OrdersValidationService/obj/
+src/KafkaStreamsCSharp/OrdersAggregator/bin/
+src/KafkaStreamsCSharp/OrdersAggregator/obj/

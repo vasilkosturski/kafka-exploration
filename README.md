@@ -1,1 +1,1 @@
-# microservices-cqrs-kafka-csharp
+# kafka-exploration

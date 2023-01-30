@@ -13,3 +13,10 @@ src/MicroservicesCqrsKafka/OrdersProducer/obj/
 src/MicroservicesCqrsKafka/Common/bin/
 src/MicroservicesCqrsKafka/OrdersProducer/bin/
 src/MicroservicesCqrsKafka/OrdersValidationService/state/
+src/KafkaStreamsCSharp/.idea/
+src/KafkaStreamsCSharp/Common/bin/
+src/KafkaStreamsCSharp/Common/obj/
+src/KafkaStreamsCSharp/OrdersProducer/bin/
+src/KafkaStreamsCSharp/OrdersProducer/obj/
+src/KafkaStreamsCSharp/OrdersValidationService/bin/
+src/KafkaStreamsCSharp/OrdersValidationService/obj/

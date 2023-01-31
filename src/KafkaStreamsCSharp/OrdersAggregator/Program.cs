@@ -16,7 +16,6 @@ public static class Program
         //RockDBReader.Read();
 
         var builder = new StreamBuilder();
-
         builder.Stream<string, string>("orders")
             .Peek((_, order) =>
                 Console.WriteLine($"Produced Order: {order}"))

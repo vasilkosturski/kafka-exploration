@@ -27,11 +27,8 @@ public static class Program
             })
             .Aggregate(
                 () => 0,
-                (_, v, acc) =>
-                {
-                    var order = JsonSerializer.Deserialize<Order>(v);
-                    return acc + order.Quantity;
-                }, RocksDb.As<int, int>($"orders-products-quantities")
+                (_, _, acc) => acc + 1,
+                RocksDb.As<int, int>("orders-products-quantities")
                     .WithKeySerdes<Int32SerDes>()
                     .WithValueSerdes<Int32SerDes>()
             )

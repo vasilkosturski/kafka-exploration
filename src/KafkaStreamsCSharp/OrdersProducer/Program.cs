@@ -13,28 +13,36 @@ public static class Program
     {
         await CreateKafkaTopic("orders", Constants.BootstrapServers);
         
-        var producer = new ProducerBuilder<string, string>(new ProducerConfig
+        using var producer = new ProducerBuilder<string, string>(new ProducerConfig
         {
             BootstrapServers = Constants.BootstrapServers
         }).Build();
 
-        for (int i = 0; i < 500; i++)
+        _ = Task.Run(async () =>
         {
-            var order = new Order
+            var orderId = 0;
+            while (true)
             {
-                Id = $"order_{i}",
-                Product = (Product)(i % 2),
-                Quantity = 1
-            };
-            await producer.ProduceAsync("orders",
-                new Message<string, string>
+                var order = new Order
                 {
-                    Key = order.Id,
-                    Value = JsonSerializer.Serialize(order)
-                });
+                    Id = $"order_{orderId}",
+                    Product = (Product)(orderId % 2)
+                };
+                
+                await producer.ProduceAsync("orders",
+                    new Message<string, string>
+                    {
+                        Key = order.Id,
+                        Value = JsonSerializer.Serialize(order)
+                    });
 
-            await Task.Delay(1000);
-        }
+                orderId++;
+                
+                await Task.Delay(1000);
+            }
+        });
+
+        Console.ReadKey();
     }
     
     private static async Task CreateKafkaTopic(string topicName, string bootstrapServers)

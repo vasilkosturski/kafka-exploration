@@ -28,12 +28,16 @@ public static class Program
                     Id = $"order_{orderId}",
                     Product = (Product)(orderId % 2)
                 };
+
+                var orderSerialized = JsonSerializer.Serialize(order);
+                
+                Console.WriteLine($"Produced Order: {orderSerialized}");
                 
                 await producer.ProduceAsync("orders",
                     new Message<string, string>
                     {
                         Key = order.Id,
-                        Value = JsonSerializer.Serialize(order)
+                        Value = orderSerialized
                     });
 
                 orderId++;

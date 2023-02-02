@@ -18,7 +18,7 @@ public static class Program
         var builder = new StreamBuilder();
         builder.Stream<string, string>("orders")
             .Peek((_, order) =>
-                Console.WriteLine($"Produced Order: {order}"))
+                Console.WriteLine($"Consumed Order: {order}"))
             .GroupBy<int, Int32SerDes>((k, v) =>
             {
                 var order = JsonSerializer.Deserialize<Order>(v);

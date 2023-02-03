@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersProducer", "OrdersPro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{BA45A7F6-4A6D-433A-8856-D41C0D172077}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RocksDbReader", "RocksDbReader\RocksDbReader.csproj", "{D5F8C0ED-0CE0-4F24-826E-EBA97555261A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA45A7F6-4A6D-433A-8856-D41C0D172077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F8C0ED-0CE0-4F24-826E-EBA97555261A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F8C0ED-0CE0-4F24-826E-EBA97555261A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F8C0ED-0CE0-4F24-826E-EBA97555261A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F8C0ED-0CE0-4F24-826E-EBA97555261A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

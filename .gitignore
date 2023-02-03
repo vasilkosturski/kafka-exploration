@@ -23,3 +23,5 @@ src/KafkaStreamsCSharp/OrdersValidationService/obj/
 src/KafkaStreamsCSharp/OrdersAggregator/bin/
 src/KafkaStreamsCSharp/OrdersAggregator/obj/
 src/KafkaStreamsCSharp/OrdersAggregator/state/
+src/KafkaStreamsCSharp/RocksDbReader/obj/
+src/KafkaStreamsCSharp/rocksdb-state/

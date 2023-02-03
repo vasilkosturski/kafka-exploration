@@ -4,6 +4,7 @@ using Confluent.Kafka;
 using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.SerDes;
 using Streamiz.Kafka.Net.Table;
+using static Common.Utils;
 
 namespace OrdersAggregator;
 
@@ -40,7 +41,7 @@ public static class Program
             ApplicationId = "test-app",
             BootstrapServers = Constants.BootstrapServers,
             AutoOffsetReset = AutoOffsetReset.Earliest,
-            StateDir = $"./state/state-dir-{rng.Next()}",
+            StateDir = GetStateDirectory(),
             
             CommitIntervalMs = (long)TimeSpan.FromHours(1).TotalMilliseconds // Set for demo purposes
         };
@@ -52,4 +53,6 @@ public static class Program
         
         await ordersStream.StartAsync();
     }
+
+    
 }

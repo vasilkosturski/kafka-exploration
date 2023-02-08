@@ -25,3 +25,4 @@ src/KafkaStreamsCSharp/OrdersAggregator/obj/
 src/KafkaStreamsCSharp/OrdersAggregator/state/
 src/KafkaStreamsCSharp/RocksDbReader/obj/
 src/KafkaStreamsCSharp/rocksdb-state/
+src/KafkaStreamsCSharp/RocksDbReader/bin/

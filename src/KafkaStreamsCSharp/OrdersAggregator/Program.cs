@@ -10,12 +10,8 @@ namespace OrdersAggregator;
 
 public static class Program
 {
-    private static Random rng = new();
-    
     public static async Task Main(string[] args)
     {
-        //RockDBReader.Read();
-
         var builder = new StreamBuilder();
         builder.Stream<string, string>("orders")
             .Peek((_, order) =>
@@ -28,7 +24,7 @@ public static class Program
             .Aggregate(
                 () => 0,
                 (_, _, acc) => acc + 1,
-                RocksDb.As<int, int>("orders-products-quantities")
+                RocksDb.As<int, int>(Constants.StateStoreName)
                     .WithKeySerdes<Int32SerDes>()
                     .WithValueSerdes<Int32SerDes>()
             )
@@ -38,7 +34,7 @@ public static class Program
         
         var config = new StreamConfig<StringSerDes, StringSerDes>
         {
-            ApplicationId = "test-app",
+            ApplicationId = Constants.ApplicationName,
             BootstrapServers = Constants.BootstrapServers,
             AutoOffsetReset = AutoOffsetReset.Earliest,
             StateDir = GetStateDirectory(),
@@ -53,6 +49,4 @@ public static class Program
         
         await ordersStream.StartAsync();
     }
-
-    
 }

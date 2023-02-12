@@ -19,7 +19,7 @@ public static class Program
             .GroupBy<int, Int32SerDes>((k, v) =>
             {
                 var order = JsonSerializer.Deserialize<Order>(v);
-                return (int)order.Product;
+                return (int)order.ProductType;
             })
             .Aggregate(
                 () => 0,
@@ -30,7 +30,7 @@ public static class Program
             )
             .ToStream()
             .Peek((product, quantity) => 
-                Console.WriteLine($"Product: {(Product)product}, Quantity: {quantity}"));
+                Console.WriteLine($"Product Type: {(ProductType)product}, Quantity: {quantity}"));
         
         var config = new StreamConfig<StringSerDes, StringSerDes>
         {

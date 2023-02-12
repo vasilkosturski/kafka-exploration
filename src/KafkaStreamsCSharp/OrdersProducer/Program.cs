@@ -24,7 +24,7 @@ public static class Program
                 var order = new Order
                 {
                     Id = $"order_{orderId}",
-                    Product = (Product)(orderId % 2)
+                    ProductType = (ProductType)(orderId % 2)
                 };
 
                 var orderSerialized = JsonSerializer.Serialize(order);

@@ -1,6 +1,6 @@
 ﻿namespace Common;
 
-public enum Product
+public enum ProductType
 {
     Jackets,
     Shirts

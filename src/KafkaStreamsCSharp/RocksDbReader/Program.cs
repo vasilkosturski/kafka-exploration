@@ -24,11 +24,11 @@ public static class Program
         
         var keySerialized = new Int32SerDes().Serialize(key, new SerializationContext());
             
-        var dbResponse = db.Get(keySerialized, db.GetDefaultColumnFamily());
+        var dbByteResponse = db.Get(keySerialized, db.GetDefaultColumnFamily());
 
-        var res = new ValueAndTimestampSerDes<int>(new Int32SerDes())
-            .Deserialize(dbResponse, new SerializationContext());
+        var dbResponse = new ValueAndTimestampSerDes<int>(new Int32SerDes())
+            .Deserialize(dbByteResponse, new SerializationContext());
             
-        Console.WriteLine($"RockDB Data. Task: {taskName}. Key: {key}. Value: {res.Value}");
+        Console.WriteLine($"RockDB Data. Task: {taskName}. Key: {key}. Value: {dbResponse.Value}");
     }
 }

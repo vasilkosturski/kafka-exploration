@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using Common;
-using Confluent.Kafka;
 using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.SerDes;
 using Streamiz.Kafka.Net.Table;
@@ -14,11 +13,11 @@ public static class Program
     {
         var builder = new StreamBuilder();
         builder.Stream<string, string>("orders")
-            .Peek((_, order) =>
-                Console.WriteLine($"Consumed Order: {order}"))
-            .GroupBy<int, Int32SerDes>((k, v) =>
+            .Peek((_, orderJson) =>
+                Console.WriteLine($"Consumed Order: {orderJson}"))
+            .GroupBy<int, Int32SerDes>((_, orderJson) =>
             {
-                var order = JsonSerializer.Deserialize<Order>(v);
+                var order = JsonSerializer.Deserialize<Order>(orderJson);
                 return (int)order.ProductType;
             })
             .Aggregate(
@@ -36,7 +35,6 @@ public static class Program
         {
             ApplicationId = Constants.ApplicationName,
             BootstrapServers = Constants.BootstrapServers,
-            AutoOffsetReset = AutoOffsetReset.Earliest,
             StateDir = GetStateDirectory(),
             
             CommitIntervalMs = (long)TimeSpan.FromHours(1).TotalMilliseconds // Set for demo purposes

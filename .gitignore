@@ -26,3 +26,7 @@ src/KafkaStreamsCSharp/OrdersAggregator/state/
 src/KafkaStreamsCSharp/RocksDbReader/obj/
 src/KafkaStreamsCSharp/rocksdb-state/
 src/KafkaStreamsCSharp/RocksDbReader/bin/
+src/KafkaCloudEvents/.idea
+src/KafkaCloudEvents/KafkaCloudEvents/.idea
+src/KafkaCloudEvents/KafkaCloudEvents/bin/
+src/KafkaCloudEvents/KafkaCloudEvents/obj/

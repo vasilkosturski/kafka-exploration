@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.Extensions;
 using CloudNative.CloudEvents.Kafka;
 using CloudNative.CloudEvents.SystemTextJson;
 using Confluent.Kafka;
@@ -18,7 +19,8 @@ public class Program
     public static async Task Main()
     {
         await CreateKafkaTopic();
-        
+
+        var userId = "UserId";
         var cloudEvent = new CloudEvent
         {
             Id = "event-id",
@@ -28,11 +30,12 @@ public class Program
             DataContentType = "application/cloudevents+json",
             Data = new User
             {
-                Id = "UserId",
+                UserId = userId,
                 FirstName = "John",
                 LastName = "Doe"
             }
         };
+        cloudEvent.SetPartitionKey(userId);
         CloudEventFormatter formatter = new JsonEventFormatter<User>(SerializationOptions, new JsonDocumentOptions());
         var kafkaMessage = cloudEvent.ToKafkaMessage(ContentMode.Structured, formatter);
 

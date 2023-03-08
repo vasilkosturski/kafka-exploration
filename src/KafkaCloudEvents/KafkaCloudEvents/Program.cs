@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.Extensions;
@@ -13,49 +14,82 @@ namespace KafkaCloudEvents;
 
 public class Program
 {
-    private const string TopicName = "users";
+    private const string Topic = "users";
     private const string BootstrapServers = "localhost:9092,localhost:9093";
 
     public static async Task Main()
     {
         await CreateKafkaTopic();
 
-        var userId = "UserId";
-        var cloudEvent = new CloudEvent
-        {
-            Id = "event-id",
-            Type = "event-type",
-            Source = new Uri("https://cloudevents.io/"),
-            Time = DateTimeOffset.UtcNow,
-            DataContentType = "application/cloudevents+json",
-            Data = new User
-            {
-                UserId = userId,
-                FirstName = "John",
-                LastName = "Doe"
-            }
-        };
-        cloudEvent.SetPartitionKey(userId);
-        CloudEventFormatter formatter = new JsonEventFormatter<User>(SerializationOptions, new JsonDocumentOptions());
-        var kafkaMessage = cloudEvent.ToKafkaMessage(ContentMode.Structured, formatter);
+        var cts = new CancellationTokenSource();
+        var formatter = new JsonEventFormatter<User>(SerializationOptions, new JsonDocumentOptions());
 
+        var producer = Task.Run(() => StartProducer(formatter, cts.Token));
+        var consumer = Task.Run(() => StartConsumer(formatter, cts.Token));
+
+        Console.ReadKey();
+        cts.Cancel();
+        await Task.WhenAll(producer, consumer);
+    }
+
+    private static async Task StartProducer(JsonEventFormatter formatter, CancellationToken ct)
+    {
         var producerConfig = new ProducerConfig { BootstrapServers = BootstrapServers };
         using var producer = new ProducerBuilder<string, byte[]>(producerConfig).Build();
-        await producer.ProduceAsync(TopicName, kafkaMessage);
 
+        var i = 1;
+        while (!ct.IsCancellationRequested)
+        {
+            var userId = $"UserId_{i}";
+            var cloudEvent = new CloudEvent
+            {
+                Id = Guid.NewGuid().ToString(),
+                Type = "event-type",
+                Source = new Uri("https://cloudevents.io/"),
+                Time = DateTimeOffset.UtcNow,
+                DataContentType = "application/cloudevents+json",
+                Data = new User
+                {
+                    UserId = userId,
+                    Name = $"Name_{i}",
+                }
+            };
+            cloudEvent.SetPartitionKey(userId);
+            var kafkaMessage = cloudEvent.ToKafkaMessage(ContentMode.Structured, formatter);
+            await producer.ProduceAsync(Topic, kafkaMessage);
+                
+            i++;
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+        }
+    }
+
+    private static void StartConsumer(JsonEventFormatter formatter, CancellationToken ct)
+    {
         var consumerConfig = new ConsumerConfig
         {
             BootstrapServers = BootstrapServers,
-            GroupId = "cgid",
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            GroupId = "cgid"
         };
         using var consumer = new ConsumerBuilder<string, byte[]>(consumerConfig).Build();
-        consumer.Subscribe(new[] { TopicName });
-        var consumedMessage = consumer.Consume().Message;
-        var cloudEventMessage = consumedMessage.ToCloudEvent(formatter);
-        var dataJsonElement = (User)cloudEventMessage.Data;
-        
-        Console.WriteLine(JsonSerializer.Serialize(dataJsonElement, SerializationOptions));
+        consumer.Subscribe(new[] { Topic });
+
+        while (!ct.IsCancellationRequested)
+        {
+            var consumeResult = consumer.Consume(TimeSpan.FromMilliseconds(100));
+            if (consumeResult is null) continue;
+                
+            var consumedMessage = consumeResult.Message;
+            var cloudEventMessage = consumedMessage.ToCloudEvent(formatter);
+            var dataJsonElement = (User)cloudEventMessage.Data;
+
+            var partition = consumeResult.Partition;
+            var key = consumeResult.Message.Key;
+            var offset = consumeResult.Offset;
+            var payload = JsonSerializer.Serialize(dataJsonElement, SerializationOptions);
+
+            Console.WriteLine($"Partition: {partition} Key: {key} Offset: {offset} Payload: {payload}");    
+        }
     }
     
     private static JsonSerializerOptions SerializationOptions => new()
@@ -78,7 +112,7 @@ public class Program
             {
                 new()
                 {
-                    Name = TopicName, 
+                    Name = Topic, 
                     ReplicationFactor = 1, 
                     NumPartitions = 2
                 }

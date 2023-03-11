@@ -88,7 +88,7 @@ public class Program
             var offset = consumeResult.Offset;
             var payload = JsonSerializer.Serialize(dataJsonElement, SerializationOptions);
 
-            Console.WriteLine($"Partition: {partition} Key: {key} Offset: {offset} Payload: {payload}");    
+            Console.WriteLine($"Partition: {partition} Key: {key} Offset: {offset} Data: {payload}");    
         }
     }
     

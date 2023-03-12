@@ -81,12 +81,12 @@ public class Program
                 
             var consumedMessage = consumeResult.Message;
             var cloudEventMessage = consumedMessage.ToCloudEvent(formatter);
-            var dataJsonElement = (User)cloudEventMessage.Data;
+            var user = (User)cloudEventMessage.Data;
 
             var partition = consumeResult.Partition;
             var key = consumeResult.Message.Key;
             var offset = consumeResult.Offset;
-            var payload = JsonSerializer.Serialize(dataJsonElement, SerializationOptions);
+            var payload = JsonSerializer.Serialize(user, SerializationOptions);
 
             Console.WriteLine($"Partition: {partition} Key: {key} Offset: {offset} Data: {payload}");    
         }

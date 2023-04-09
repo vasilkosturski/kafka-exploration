@@ -60,6 +60,7 @@ class Program
             .SetValueDeserializer(new ProtobufDeserializer<User>().AsSyncOverAsync())
             .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
             .Build();
+        
         consumer.Subscribe(Topic);
 
         try

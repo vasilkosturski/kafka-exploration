@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+message Animal {
+    string name = 1;
+    int32 age = 2;
+
+    oneof animal_type {
+        Cat cat = 3;
+        Dog dog = 4;
+        Bird bird = 5;
+    }
+}
+
+message Cat {
+    enum Color {
+        BLACK = 0;
+        WHITE = 1;
+        GRAY = 2;
+        ORANGE = 3;
+    }
+    Color color = 1;
+}
+
+message Dog {
+    enum Breed {
+        LABRADOR = 0;
+        GOLDEN_RETRIEVER = 1;
+        GERMAN_SHEPHERD = 2;
+        BULLDOG = 3;
+    }
+    Breed breed = 1;
+}
+
+message Bird {
+    bool can_fly = 1;
+}

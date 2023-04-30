@@ -53,11 +53,12 @@ class Program
             .With(x => x.Age, randomInt % 10 + 1);
         
         var animalTypIndex = randomInt % 3;
-        if (animalTypIndex == 0)
-            return animalBuilder.With(x => x.Cat).Create();
-        if (animalTypIndex == 1)
-            return animalBuilder.With(x => x.Dog).Create();
-        return animalBuilder.With(x => x.Bird).Create();
+        return animalTypIndex switch
+        {
+            0 => animalBuilder.With(x => x.Cat).Create(),
+            1 => animalBuilder.With(x => x.Dog).Create(),
+            _ => animalBuilder.With(x => x.Bird).Create()
+        };
     }
     
     private static async Task StartProducer(ProtobufEventFormatter formatter, CancellationToken ct)

@@ -65,11 +65,10 @@ class Program
     {
         var producerConfig = new ProducerConfig { BootstrapServers = BootstrapServers };
         using var producer = new ProducerBuilder<string, byte[]>(producerConfig).Build();
-        
-        var i = 1;
+
         while (!ct.IsCancellationRequested)
         {
-            var userId = $"UserId_{i}";
+            var animal = ProduceAnimal();
             var cloudEvent = new CloudEvent
             {
                 Id = Guid.NewGuid().ToString(),
@@ -77,13 +76,11 @@ class Program
                 Source = new Uri("https://cloudevents.io/"),
                 Time = DateTimeOffset.UtcNow,
                 DataContentType = "application/protobuf",
-                Data = ProduceAnimal().ToByteArray()
+                Data = animal.ToByteArray()
             };
-            cloudEvent.SetPartitionKey(userId);
+            cloudEvent.SetPartitionKey(animal.Name);
             var kafkaMessage = cloudEvent.ToKafkaMessage(ContentMode.Binary, formatter);
             await producer.ProduceAsync(Topic, kafkaMessage, ct);
-                
-            i++;
 
             await Task.Delay(TimeSpan.FromSeconds(1), ct);
         }

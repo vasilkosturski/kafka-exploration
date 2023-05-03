@@ -37,10 +37,13 @@ class Program
     {
         var cts = new CancellationTokenSource();
         var formatter = new ProtobufEventFormatter();
+        
+        var producer = Task.Run(() => StartProducer(formatter, cts.Token));
         var consumer = Task.Run(() => StartConsumer(formatter, cts.Token));
-        await StartProducer(formatter, cts.Token);
+        
+        Console.ReadKey();
         cts.Cancel();
-        await consumer;
+        await Task.WhenAll(producer, consumer);
     }
 
     private static Animal ProduceAnimal()

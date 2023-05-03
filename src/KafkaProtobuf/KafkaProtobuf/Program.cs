@@ -18,10 +18,13 @@ class Program
     static async Task Main(string[] args)
     {   
         var cts = new CancellationTokenSource();
+        
+        var producer = Task.Run(() => StartProducer(cts.Token));
         var consumer = Task.Run(() => StartConsumer(cts.Token));
-        await StartProducer(cts.Token);
+        
+        Console.ReadKey();
         cts.Cancel();
-        await consumer;
+        await Task.WhenAll(producer, consumer);
     }
     
     private static async Task StartProducer(CancellationToken ct)

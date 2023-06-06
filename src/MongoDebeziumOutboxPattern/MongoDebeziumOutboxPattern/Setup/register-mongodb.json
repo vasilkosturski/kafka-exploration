@@ -1,0 +1,12 @@
+{
+  "name": "inventory-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "tasks.max": "1",
+    "mongodb.hosts": "rs0/mongodb:27017",
+    "topic.prefix": "outbox",
+    "database.include.list": "testdb",
+    "transforms": "outbox",
+    "transforms.outbox.type": "io.debezium.connector.mongodb.transforms.outbox.MongoEventRouter"
+  }
+}

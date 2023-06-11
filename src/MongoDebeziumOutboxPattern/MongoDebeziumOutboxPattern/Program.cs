@@ -10,7 +10,7 @@ await new UserService().CreateUserAsync();
 void MongoSetup()
 {
     var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
-    ConventionRegistry.Register("camelCase", conventionPack, t => true);
+    ConventionRegistry.Register("camelCase", conventionPack, _ => true);
 
     var supportedTypes = new[] { typeof(User) };
     var objectSerializer = new ObjectSerializer(type => supportedTypes.Contains(type));

@@ -1,9 +1,18 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using MongoDB.Driver;
+﻿using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDebeziumOutboxPattern;
 
-var client = new MongoClient("mongodb://localhost:27017");
-var userService = new UserService(client);
-await userService.CreateUserAsync("Adam");
+MongoSetup();
 
+await new UserService().CreateUserAsync();
+
+void MongoSetup()
+{
+    var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
+    ConventionRegistry.Register("camelCase", conventionPack, t => true);
+
+    var supportedTypes = new[] { typeof(User) };
+    var objectSerializer = new ObjectSerializer(type => supportedTypes.Contains(type));
+    BsonSerializer.RegisterSerializer(objectSerializer);
+}

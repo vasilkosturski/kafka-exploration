@@ -7,6 +7,8 @@
     "topic.prefix": "outbox",
     "database.include.list": "testdb",
     "transforms": "outbox",
-    "transforms.outbox.type": "io.debezium.connector.mongodb.transforms.outbox.MongoEventRouter"
+    "transforms.outbox.type": "io.debezium.connector.mongodb.transforms.outbox.MongoEventRouter",
+    "transforms.outbox.collection.expand.json.payload": true,
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter"
   }
 }

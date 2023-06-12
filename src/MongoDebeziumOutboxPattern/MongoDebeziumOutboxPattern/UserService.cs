@@ -28,25 +28,24 @@ public class UserService
             {
                 Name = "Adam"
             };
-
-            await _usersCollection.InsertOneAsync(_session, newUser);
+            await _usersCollection.InsertOneAsync(newUser);
 
             var outboxRecord = new OutboxRecord
             {
                 AggregateType = "user",
-                //AggregateId = ObjectId.GenerateNewId(),
-                AggregateId = "some_id",
+                AggregateId = newUser.Id,
                 Type = "userCreated",
                 Payload = JsonSerializer.Serialize(new User
                 {
+                    Id = newUser.Id,
                     Name = "Adam"
                 }, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                }) // Here we're using the whole User object as the payload.
+                })
             };
-            await _outboxCollection.InsertOneAsync(_session, outboxRecord);
-        
+            await _outboxCollection.InsertOneAsync(outboxRecord);
+
             await _session.CommitTransactionAsync();
         }
         catch (Exception e)

@@ -7,20 +7,19 @@ public class UserService
 {
     private readonly IMongoCollection<User> _usersCollection;
     private readonly IMongoCollection<OutboxRecord> _outboxCollection;
-    private readonly IClientSessionHandle _session;
+    private readonly MongoClient _client;
 
     public UserService()
     {
-        var client = new MongoClient("mongodb://localhost:27017");
-        var database = client.GetDatabase("testdb");
+        _client = new MongoClient("mongodb://localhost:27017");
+        var database = _client.GetDatabase("testdb");
         _usersCollection = database.GetCollection<User>("users");
         _outboxCollection = database.GetCollection<OutboxRecord>("outbox");
-        _session = client.StartSession();
     }
 
     public async Task CreateUserAsync()
     {
-        _session.StartTransaction();
+        using var session = await _client.StartSessionAsync();
 
         try
         {
@@ -28,7 +27,7 @@ public class UserService
             {
                 Name = "Adam"
             };
-            await _usersCollection.InsertOneAsync(newUser);
+            await _usersCollection.InsertOneAsync(session, newUser);
 
             var outboxRecord = new OutboxRecord
             {
@@ -44,14 +43,14 @@ public class UserService
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 })
             };
-            await _outboxCollection.InsertOneAsync(outboxRecord);
+            await _outboxCollection.InsertOneAsync(session, outboxRecord);
 
-            await _session.CommitTransactionAsync();
+            await session.CommitTransactionAsync();
         }
         catch (Exception e)
         {
             Console.WriteLine("An error occurred: " + e.Message);
-            await _session.AbortTransactionAsync();
+            await session.AbortTransactionAsync();
         }
     }
 }

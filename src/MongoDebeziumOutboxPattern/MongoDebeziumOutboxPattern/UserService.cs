@@ -50,7 +50,7 @@ public class UserService
         }
         catch (Exception e)
         {
-            Console.WriteLine("An error occurred: " + e.Message);
+            Console.WriteLine($"An error occurred: {e.Message}");
             await session.AbortTransactionAsync();
         }
     }

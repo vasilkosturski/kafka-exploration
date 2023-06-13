@@ -20,6 +20,7 @@ public class UserService
     public async Task CreateUserAsync()
     {
         using var session = await _client.StartSessionAsync();
+        session.StartTransaction();
 
         try
         {

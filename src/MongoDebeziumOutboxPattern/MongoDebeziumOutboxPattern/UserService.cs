@@ -5,6 +5,11 @@ namespace MongoDebeziumOutboxPattern;
 
 public class UserService
 {
+    private static readonly string[] SampleNames =
+        { "Jackson", "Benjamin", "Ethan", "Samuel", "Matthew", "Carter", "Andrew", "Logan", "William", "Daniel" };
+    
+    private static readonly Random Rng = new();
+    
     private readonly IMongoCollection<User> _usersCollection;
     private readonly IMongoCollection<OutboxRecord> _outboxCollection;
     private readonly MongoClient _client;
@@ -17,7 +22,7 @@ public class UserService
         _outboxCollection = database.GetCollection<OutboxRecord>("outbox");
     }
 
-    public async Task CreateUserAsync()
+    public async Task CreateRandomUser()
     {
         using var session = await _client.StartSessionAsync();
         session.StartTransaction();
@@ -26,9 +31,10 @@ public class UserService
         {
             var newUser = new User
             {
-                Name = "Adam"
+                Name = SampleNames[Rng.Next(SampleNames.Length)]
             };
             await _usersCollection.InsertOneAsync(session, newUser);
+            Console.WriteLine($"Inserted user to Mongo: {newUser.Name}");
 
             var outboxRecord = new OutboxRecord
             {
@@ -38,7 +44,7 @@ public class UserService
                 Payload = JsonSerializer.Serialize(new User
                 {
                     Id = newUser.Id,
-                    Name = "Adam"
+                    Name = newUser.Name
                 }, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase

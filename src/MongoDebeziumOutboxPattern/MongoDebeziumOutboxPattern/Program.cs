@@ -29,7 +29,8 @@ static void StartConsumer(CancellationToken ct)
     {
         BootstrapServers = "localhost:9092",
         GroupId = "cgid",
-        AutoOffsetReset = AutoOffsetReset.Earliest
+        AutoOffsetReset = AutoOffsetReset.Earliest,
+        AllowAutoCreateTopics = true
     };
     using var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
     consumer.Subscribe(new[] { "outbox.event.user" });

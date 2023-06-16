@@ -33,7 +33,7 @@ services:
     ports:
       - 27017:27017
   connect:
-    image: quay.io/debezium/connect:${DEBEZIUM_VERSION}
+    image: quay.io/debezium/connect:2.1
     ports:
       - 8083:8083
     links:

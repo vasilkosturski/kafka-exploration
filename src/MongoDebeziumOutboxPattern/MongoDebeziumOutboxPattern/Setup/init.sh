@@ -1,5 +1,3 @@
-# Start the topology as defined in https://debezium.io/documentation/reference/stable/tutorial.html
-export DEBEZIUM_VERSION=2.1
 docker-compose -f docker-compose-mongodb.yaml up -d
 
 # Wait for MongoDB to start
@@ -25,7 +23,6 @@ do
 done
 echo "MongoDB replica set is fully initialized."
 
-# Creating a database and collection
 echo "Creating 'testdb' database and 'outbox' collection..."
 docker run --network host --rm mongo:5.0 mongo --host localhost --eval '
     db = db.getSiblingDB("testdb");

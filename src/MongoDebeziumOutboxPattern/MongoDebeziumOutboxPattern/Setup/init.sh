@@ -1,8 +1,5 @@
 docker-compose -f docker-compose-mongodb.yaml up -d
 
-# Wait for MongoDB to start
-echo "Waiting for MongoDB to start..."
-
 # Check the status of MongoDB and wait until it's ready
 until docker run --network host --rm mongo:5.0 mongo --host localhost --eval "db.adminCommand('ping')"
 do
